@@ -1,6 +1,16 @@
 # HTTPS/WSS 배포
 
-## 권장: 프론트엔드 + 서버를 동일 Node 서비스로 배포
+## 현재 공개 서버 (2026-10-27)
+
+- 게임: **https://geo-battleground.onrender.com** — 회원가입 없이 접속합니다.
+- 소스: https://github.com/doyulnam11-netizen/geo-battleground
+- Render: My Workspace / geo-battleground / Singapore / Free / Node 22 / 인스턴스 1개.
+- 실제 Render 빌드: `npm ci --include=dev && npm run check`, 실행: `npm start`.
+- HTTPS 상태: `/api/health`, WSS: `/ws`. 최초 배포가 LIVE가 된 뒤 독립된 두 공개 WSS 연결로 같은 방·준비·시작·이동·기울이기·발사/장탄·안전구역·재접속을 확인했습니다. `public-network-results.json`을 참고하세요.
+- Render가 프론트엔드도 제공합니다. 친구에게 위 게임 주소를 보내고 **방 만들기 → 6자리 코드 공유 → 코드로 입장 → 준비 완료 → 방장 작전 시작** 순으로 진행합니다.
+- 이 서비스는 자동 배포가 꺼져 있습니다. GitHub main 갱신 후 Render 대시보드의 **Manual Deploy → Deploy latest commit**으로 반영합니다. 배포/재시작 시 진행 중 경기는 사라집니다.
+
+## 다른 서비스에 프론트엔드 + 서버를 함께 배포
 
 이 방식은 한 URL로 PC·스마트폰·태블릿이 같은 WebSocket 서버에 연결됩니다. 회원가입·결제·외부 게임 계정은 코드에 없습니다.
 
@@ -12,9 +22,9 @@
 6. 배포된 실제 HTTPS URL에서 방을 만들고 다른 기기로 같은 URL을 엽니다. 주소를 QR로 공유할 수 있습니다. Node 서버가 제공하는 프론트엔드는 별도 VITE_SERVER_URL 없이 동일 origin의 WSS `/ws`에 접속합니다.
 7. 60초 이하 연결 끊김·퀴즈 제한시간 유지·마지막 생존자·로비 복귀를 실제 기기에서 확인합니다.
 
-render.yaml은 시험용 `free` 플랜을 명시합니다. 2026-10-27 Render 공식 문서에서 확인한 사양은 0.1 CPU/512MB입니다. HTTP 요청 또는 기존 연결의 WebSocket 메시지를 15분간 받지 않으면 절전하며, 다시 접속할 때 약 1분의 시작 시간이 걸릴 수 있습니다. 무료 시간 한도는 작업공간당 월 750시간입니다. 12인 성능은 실제 배포 후 측정해야 합니다. 유료 서비스를 생성하지 않았으며 외부 Node 서버의 운영용 주소도 아직 발급하지 않았습니다.
+render.yaml은 시험용 `free` 플랜을 명시합니다. 2026-10-27 Render 공식 문서에서 확인한 사양은 0.1 CPU/512MB입니다. HTTP 요청 또는 기존 연결의 WebSocket 메시지를 15분간 받지 않으면 절전하며, 다시 접속할 때 약 1분의 시작 시간이 걸릴 수 있습니다. 무료 시간 한도는 작업공간당 월 750시간입니다. 12인 성능은 실제 배포 후 측정해야 합니다. 무료 서비스를 생성했으며 실제 주소는 위에 기재했습니다. 유료 플랜으로 전환하지 않았습니다.
 
-현재 Render 및 GitHub 계정 연결은 확인했습니다. 다만 GitHub에서 새 저장소 생성 요청이 권한 부족으로 거절되어 소스 저장소 생성이 필요합니다. Render 작업공간 선택도 사용자 확인을 기다리고 있습니다. GitHub 저장소에 실제 소스가 올라간 뒤 Render를 생성하고 HTTPS/WSS 접속을 검사해야 합니다. 기존 공개 Sites 주소는 연습용 프론트엔드이며 이것만으로 멀티 서버가 개통된 것은 아닙니다.
+
 
 ## 자신의 Linux 서버 + Docker + Caddy
 
@@ -35,12 +45,12 @@ Dockerfile/Compose/Caddyfile을 제공했으나 이 작업에서 Docker 이미�
 프론트엔드: `dist/`를 정적 호스팅에 배포합니다. 서버: 동일 저장소의 Node 빌드를 WebSocket 지원 환경에 배포합니다.
 
 ```sh
-VITE_SERVER_URL='https://실제-게임-서버-도메인' npm run build
+VITE_SERVER_URL='https://geo-battleground.onrender.com' npm run build
 ```
 
 빌드하지 않고 게임 내 설정 → 서버 연결에 실제 HTTPS/WSS 서버 주소를 저장할 수도 있습니다. 정적 호스팅 자체에는 Node ws 서버가 포함되어 실행되지 않습니다. 정적 사이트만 열면 서버가 없는 경우 로컬 봇 연습이 가능하고, 온라인 입장은 연결 오류를 명확히 표시합니다.
 
-Sites는 프론트엔드 연습/검토용 배포에 사용합니다. 현재 Sites 런타임은 장기 실행 Node.js ws 프로세스를 제공하지 않으므로 Node 서버를 별도로 배포해야 합니다. 신규 Sites 배포는 소유자 비공개 기본값을 따릅니다. 이것을 공개 학교용 멀티플레이 서버 배포와 혼동하지 마세요. 공개 게임 제공은 위 Node 동시 호스팅 방식을 권장합니다.
+기존 Sites 프론트엔드 https://geo-battleground-field-07.lilacbream18.chatgpt.site 는 위 `VITE_SERVER_URL`로 빌드해 동일 Render 서버에 연결하도록 구성합니다. 이 정적 사이트의 공개 설정을 유지합니다. 서버 상태 조회도 설정된 서버 주소를 따르며, 서버는 공개 상태 정보에 CORS를 허용합니다. 게임 설정에서 수동 저장한 서버 주소가 있으면 빌드 기본값보다 우선하므로, 기본 서버로 돌아가려면 해당 입력값을 비우고 저장하세요.
 
 ## 운용과 확장
 

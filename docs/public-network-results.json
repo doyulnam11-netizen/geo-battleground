@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-27T09:07:03.157Z",
+  "server": "wss://geo-battleground.onrender.com/ws",
+  "environment": "Two independent TLS WebSocket clients over public internet via session proxy; not physical phones",
+  "checks": [
+    "Public WSS: create and join same 6-character room",
+    "Ready/start, common round time and safety zone",
+    "Remote movement, lean, firing/ammo; HP injection ignored",
+    "Disconnect/reconnect restores same player and room"
+  ],
+  "status": "passed"
+}
