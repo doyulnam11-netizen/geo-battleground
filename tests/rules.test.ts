@@ -34,3 +34,9 @@ test('training-only down command is not allowed online',()=>{const r=room();r.ac
 
 test('exported character GLB contains a skin and all 18 animation states',async()=>{const {readFile}=await import('node:fs/promises');const bytes=await readFile(new URL('../public/assets/models/geo-ranger.glb',import.meta.url));assert.equal(bytes.toString('ascii',0,4),'glTF');const json=JSON.parse(bytes.toString('utf8',20,20+bytes.readUInt32LE(12)));assert.equal(json.skins[0].joints.length,17);assert.equal(json.animations.length,18);assert.ok(json.animations.every((a:any)=>a.channels.length>0));for(const name of ['idle','walk','run','sprint','jump','air','land','crouch','crouchWalk','prone','proneWalk','aim','fire','reload','hit','down','recover','pickup'])assert.ok(json.animations.some((a:any)=>a.name===name));});
 test('server step-up climbs survey stairs without teleporting through a full wall',()=>{const r=room(),p=r.players.get('p0')!;p.x=tower.x-3;p.z=tower.z+11;p.y=heightAt(p.x,p.z);p.grounded=true;let highest=p.y,maxJump=0;for(let i=0;i<210;i++){const old=p.y;movePlayer(p,input(i),1/30);highest=Math.max(highest,p.y);maxJump=Math.max(maxJump,Math.abs(p.y-old));}assert.ok(highest>=tower.y+4.8,`height=${highest-tower.y}`);assert.ok(maxJump<.65,`vertical delta=${maxJump}`);});
+
+test('tapped item ID selects exactly that item; distant, missing and duplicate taps cannot award loot',()=>{
+ const r=room(),p=r.players.get('p0')!;r.loot=[{id:'near',kind:'med',x:p.x,z:p.z},{id:'selected',kind:'kit',x:p.x,z:p.z},{id:'far',kind:'ammo',x:p.x+30,z:p.z}];
+ const kits=p.kits,meds=p.meds,ammo=p.ammo;r.action(p.id,'loot','selected',t0+100);assert.equal(p.kits,kits+1);assert.equal(p.meds,meds);assert.ok(r.loot.some(l=>l.id==='near'));
+ r.action(p.id,'loot','selected',t0+110);r.action(p.id,'loot','missing',t0+120);r.action(p.id,'loot','far',t0+130);assert.equal(p.kits,kits+1);assert.equal(p.ammo,ammo);assert.equal(p.looted,1);
+});
