@@ -30,3 +30,5 @@
 @media(max-width:900px){.touch-leanLeft{right:136px;bottom:202px}.touch-leanRight{right:83px;bottom:202px}}
 @media(max-height:480px) and (orientation:landscape){.touch-leanLeft{right:135px;bottom:190px}.touch-leanRight{right:82px;bottom:190px}.layout-edit-bar{top:6px;padding:6px 12px;gap:8px}.layout-edit-bar label{min-width:90px;font-size:9px}.layout-edit-bar input[type=range]{width:95px}.layout-edit-bar button{font-size:10px}.layout-edit-bar small{display:none}}
 @media(pointer:coarse) and (min-width:901px){.touch-leanLeft{right:240px;bottom:318px}.touch-leanRight{right:165px;bottom:318px}}
+
+.touch-button[aria-pressed="true"]{background:rgba(178,209,123,.32);border-color:#c9e6a0;box-shadow:0 0 0 2px rgba(201,230,160,.24);color:#efffda;}

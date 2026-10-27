@@ -12,7 +12,7 @@ export class Controls {
  }
  toggleStance(stance:Stance){this.stance=this.stance===stance?'stand':stance;}
  look(dx:number,dy:number){const gain=settings.sensitivity*(this.aim?settings.adsSensitivity:1)*.0022;this.yaw-=dx*gain;this.pitch=Math.max(-1.48,Math.min(1.48,this.pitch-dy*gain));}
- sample():Input{const k=settings.keys;return {seq:++this.seq,x:this.blocked?0:Number(this.keys.has(k.right))-Number(this.keys.has(k.left))+this.stick.x,z:this.blocked?0:Number(this.keys.has(k.forward))-Number(this.keys.has(k.back))+this.stick.z,yaw:this.yaw,pitch:this.pitch,jump:!this.blocked&&this.jump,sprint:!this.blocked&&(this.keys.has(k.sprint)||this.sprint||this.stick.z>.94),lean:this.blocked?0:Number(this.keys.has(k.leanRight)||this.leanRight)-Number(this.keys.has(k.leanLeft)||this.leanLeft),stance:this.stance,aim:!this.blocked&&this.aim,fire:!this.blocked&&this.fire};}
+ sample():Input{const k=settings.keys;return {seq:++this.seq,x:this.blocked?0:Number(this.keys.has(k.right))-Number(this.keys.has(k.left))+this.stick.x,z:this.blocked?0:Number(this.keys.has(k.forward))-Number(this.keys.has(k.back))+this.stick.z,yaw:this.yaw,pitch:this.pitch,jump:!this.blocked&&this.jump,sprint:!this.blocked&&(this.keys.has(k.sprint)||this.sprint),lean:this.blocked?0:Number(this.keys.has(k.leanRight)||this.leanRight)-Number(this.keys.has(k.leanLeft)||this.leanLeft),stance:this.stance,aim:!this.blocked&&this.aim,fire:!this.blocked&&this.fire};}
  reset(){this.keys.clear();this.fire=false;this.aim=false;this.stick={x:0,z:0};this.jump=false;this.sprint=false;this.leanLeft=false;this.leanRight=false;}
  dispose(){this.cleanups.forEach(fn=>fn());}
 }
