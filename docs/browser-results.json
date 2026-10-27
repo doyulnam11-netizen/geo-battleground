@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-27T04:01:32.588Z",
+  "environment": "Linux headless Chromium + SwiftShader; mobile/tablet emulation, not physical devices",
+  "results": [
+    {
+      "name": "Desktop WebGL2 menu renders without runtime errors",
+      "status": "passed"
+    },
+    {
+      "name": "Encyclopedia tabs show scientific content",
+      "status": "passed"
+    },
+    {
+      "name": "Browser training quiz submits correct answer and shows HP 35",
+      "status": "passed"
+    },
+    {
+      "name": "Two concurrent browser contexts",
+      "status": "not verified",
+      "reason": "Concurrent SwiftShader context initialization timed out in this environment. Two independent real WebSocket connections are covered by npm test. Set QA_CONCURRENT_BROWSER=1 to retry on a GPU machine."
+    },
+    {
+      "name": "Android-size emulation: three simultaneous touches move, look and fire",
+      "status": "passed",
+      "ammoBefore": 30,
+      "ammoAfter": 0
+    },
+    {
+      "name": "Portrait rotation guidance",
+      "status": "passed"
+    },
+    {
+      "name": "Tablet layout uses larger dedicated joystick and controls",
+      "status": "passed"
+    },
+    {
+      "name": "No browser JavaScript runtime errors",
+      "status": "passed"
+    }
+  ],
+  "errors": []
+}

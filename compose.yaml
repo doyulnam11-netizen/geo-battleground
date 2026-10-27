@@ -1,0 +1,23 @@
+services:
+  game:
+    build: .
+    restart: unless-stopped
+    environment:
+      PORT: 3001
+      ALLOWED_ORIGINS: https://${GEO_DOMAIN}
+    expose: ["3001"]
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      GEO_DOMAIN: ${GEO_DOMAIN}
+      GEO_EMAIL: ${GEO_EMAIL}
+    ports: ["80:80", "443:443", "443:443/udp"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [game]
+volumes:
+  caddy_data:
+  caddy_config:

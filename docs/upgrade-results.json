@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-27T03:59:25.364Z",
+  "environment": "Linux Chromium SwiftShader; emulation, not physical phones",
+  "results": [
+    {
+      "name": "Per-button size, opacity and dragged layout persist after reload",
+      "status": "passed"
+    },
+    {
+      "name": "Four simultaneous touches move, look, fire and lean; release recenters",
+      "status": "passed"
+    },
+    {
+      "name": "High-quality PBR terrain and SSAO compile/render without WebGL or JS errors",
+      "status": "passed"
+    }
+  ],
+  "errors": []
+}
