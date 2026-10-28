@@ -27,6 +27,8 @@ export function makeLoot(kind:Loot['kind'],weapon=0){
   for(const x of [-.095,.035]){const roll=add(new T.CylinderGeometry(.052,.052,.19,18),white,x,.18,0);roll.rotation.x=Math.PI/2;const core=add(new T.TorusGeometry(.029,.008,6,18),rubber,x,.18,.098);core.name='bandage-core';}
   const bottle=add(new T.CylinderGeometry(.04,.04,.22,16),orange,.145,.17,0);bottle.rotation.x=Math.PI/2;
   box(.22,.035,.045,shell,-.025,.235,0);box(.05,.014,.10,white,-.025,.26,0);box(.12,.014,.04,white,-.025,.26,0);
+ }else if(kind==='scope'){
+ const tube=add(new T.CylinderGeometry(.07,.07,.30,16),rubber,0,.12,0);tube.rotation.x=Math.PI/2;const lens=add(new T.CylinderGeometry(.061,.061,.012,16),new T.MeshStandardMaterial({color:0x69cbd9,metalness:.65,roughness:.12}),0,.12,.155);lens.rotation.x=Math.PI/2;box(.18,.04,.14,shell,0,.035,0);
  }else if(kind==='weapon'){
   const model=makeWeapon(weapon);model.rotation.z=Math.PI/2;model.position.y=.2;group.add(model);
  }else{

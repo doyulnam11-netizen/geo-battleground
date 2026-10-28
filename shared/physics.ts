@@ -1,10 +1,10 @@
-import {RULES} from './config';
+import {RULES,FLIGHT} from './config';
 import {heightAt,obstacles,clearSpawn, type Box} from './world';
 import type {Input,Player,Stance} from './types';
 export const bodyHeight=(s:Stance)=>s==='prone'?.55:s==='crouch'?1.15:1.8;
 export const eyeHeight=(s:Stance)=>bodyHeight(s)-.12;
 export function intersects(x:number,y:number,z:number,h:number,b:Box,r=RULES.playerRadius){const cx=Math.max(b.x-b.w/2,Math.min(x,b.x+b.w/2)),cz=Math.max(b.z-b.d/2,Math.min(z,b.z+b.d/2));return (x-cx)**2+(z-cz)**2<r*r&&y+h>b.y-b.h/2+.015&&y<b.y+b.h/2-.015;}
-export function movePlayer(p:Player,i:Input,dt:number){if(p.status!=='alive')return;dt=Math.min(dt,.05);p.yaw=i.yaw;p.pitch=i.pitch;p.aim=i.aim;if(p.drop){p.aim=false;p.grounded=false;p.lean=0;if(p.drop==='plane'){p.x+=12*dt;p.y=100;if(i.jump)p.drop='chute';}else{p.x=Math.max(-190,Math.min(190,p.x+(Math.cos(i.yaw)*i.x-Math.sin(i.yaw)*i.z)*7*dt));p.z=Math.max(-190,Math.min(190,p.z+(-Math.sin(i.yaw)*i.x-Math.cos(i.yaw)*i.z)*7*dt));p.y-=9*dt;if(p.y<=heightAt(p.x,p.z)){if(!clearSpawn(p.x,p.z)){const ox=p.x,oz=p.z;outer:for(let r=1;r<30;r++)for(let a=0;a<16;a++){const x=ox+Math.cos(a*Math.PI/8)*r,z=oz+Math.sin(a*Math.PI/8)*r;if(clearSpawn(x,z)){p.x=x;p.z=z;break outer;}}}p.y=heightAt(p.x,p.z);p.drop=undefined;p.grounded=true;p.vy=0;}}return;}
+export function movePlayer(p:Player,i:Input,dt:number){if(p.status!=='alive')return;dt=Math.min(dt,.05);p.yaw=i.yaw;p.pitch=i.pitch;p.aim=i.aim;if(p.drop){p.aim=false;p.grounded=false;p.lean=0;if(p.drop==='plane'){p.x=Math.min(FLIGHT.endX,p.x+FLIGHT.speed*dt);p.y=FLIGHT.altitude;if(i.jump)p.drop='chute';}else{p.x=Math.max(-190,Math.min(190,p.x+(Math.cos(i.yaw)*i.x-Math.sin(i.yaw)*i.z)*7*dt));p.z=Math.max(-190,Math.min(190,p.z+(-Math.sin(i.yaw)*i.x-Math.cos(i.yaw)*i.z)*7*dt));p.y-=9*dt;if(p.y<=heightAt(p.x,p.z)){if(!clearSpawn(p.x,p.z)){const ox=p.x,oz=p.z;outer:for(let r=1;r<30;r++)for(let a=0;a<16;a++){const x=ox+Math.cos(a*Math.PI/8)*r,z=oz+Math.sin(a*Math.PI/8)*r;if(clearSpawn(x,z)){p.x=x;p.z=z;break outer;}}}p.y=heightAt(p.x,p.z);p.drop=undefined;p.grounded=true;p.vy=0;}}return;}
 const oldH=bodyHeight(p.stance),newH=bodyHeight(i.stance);if(newH<=oldH||!obstacles.some(b=>intersects(p.x,p.y,p.z,newH,b)))p.stance=i.stance;
 let len=Math.hypot(i.x,i.z),vx=i.x/Math.max(1,len),vz=i.z/Math.max(1,len);p.moving=len>.05;p.sprinting=i.sprint&&!i.aim&&p.stance==='stand';
 const speed=(p.stance==='prone'?RULES.prone:p.stance==='crouch'?RULES.crouch:p.sprinting?RULES.sprint:RULES.walk)*(i.aim?.64:1)*(p.healUntil? .5:1);

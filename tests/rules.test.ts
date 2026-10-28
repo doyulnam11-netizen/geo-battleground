@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {GameRoom} from '../server/game';
 import questions from '../server/data/questions.json';
-import {RULES,WEAPONS} from '../shared/config';
+import {RULES,WEAPONS,FLIGHT} from '../shared/config';
 import {movePlayer,eyeHeight,worldRay,direction,bodyHeight} from '../shared/physics';
 import {heightAt,obstacles,clearSpawn,tower} from '../shared/world';
 import type {Question,Input} from '../shared/types';
@@ -43,6 +43,16 @@ test('tapped item ID selects exactly that item; distant, missing and duplicate t
 
 test('airdrop supports server-owned jump, fire lock and safe landing; scopes reject invalid powers',()=>{
  const r=new GameRoom('FLIGHT',bank,false,1337,true);r.addPlayer('a','A',t0);r.addPlayer('b','B',t0);r.ready('b');r.start('a',t0);const p=r.players.get('a')!;assert.equal(p.drop,'plane');assert.equal(p.y,100);const mag=p.mag[0];r.shoot(p,input(),t0+5000);assert.equal(p.mag[0],mag);r.damage(p.id,100,null,t0+5000);assert.equal(p.hp,100);
- movePlayer(p,{...input(),jump:true},1/30);assert.equal(p.drop,'chute');for(let n=0;n<600&&p.drop;n++)movePlayer(p,{...input(),x:0,z:0},1/30);assert.equal(p.drop,undefined);assert.ok(clearSpawn(p.x,p.z));assert.equal(p.y,heightAt(p.x,p.z));for(const scope of [1,2,4,8]){r.action(p.id,'scope',scope,t0+20000);assert.equal(p.scope,scope);}r.action(p.id,'scope',99,t0+20001);assert.equal(p.scope,8);
+ movePlayer(p,{...input(),jump:true},1/30);assert.equal(p.drop,'chute');for(let n=0;n<600&&p.drop;n++)movePlayer(p,{...input(),x:0,z:0},1/30);assert.equal(p.drop,undefined);assert.ok(clearSpawn(p.x,p.z));assert.equal(p.y,heightAt(p.x,p.z));p.weapons=[0];p.holstered=false;p.scopes=[2,4,8];for(const scope of [1,2,4,8]){r.action(p.id,'scope',scope,t0+20000);assert.equal(p.scope,scope);}r.action(p.id,'scope',99,t0+20001);assert.equal(p.scope,8);
 });
 test('sniper and shotgun consume one cartridge per shot and respect their fire interval',()=>{for(const weapon of [3,4]){const r=room(),p=r.players.get('p0')!;p.weapon=weapon;p.weapons.push(weapon);const before=p.mag[weapon];r.shoot(p,input(),t0+5000);assert.equal(p.mag[weapon],before-1);r.shoot(p,input(),t0+5001);assert.equal(p.mag[weapon],before-1);assert.ok(p.hits<=p.shots);assert.equal(r.events.filter(e=>e.type==='shot').length,weapon===4?8:1);}});
+
+test('full map flight stays aboard past 12s and exits at opposite edge; farmed scopes equip, switch and detach',()=>{
+ const r=new GameRoom('FARM01',bank,false,1337,true);r.addPlayer('a','A',t0);r.addPlayer('b','B',t0);r.ready('b');r.start('a',t0);const p=r.players.get('a')!;assert.equal(p.x,-200);assert.deepEqual(p.weapons,[]);assert.deepEqual(p.scopes,[]);
+ r.tick(t0+13000);assert.equal(p.drop,'plane');assert.ok(Math.abs(p.x-(-200+13*12))<.01);r.tick(t0+FLIGHT.durationMs);assert.equal(p.drop,'chute');assert.ok(Math.abs(p.x-200)<.01);
+ for(let n=0;n<650&&p.drop;n++)movePlayer(p,{...input(),x:0,z:0},1/30);
+ r.action('a','weapon',3,t0+40000);assert.ok(p.holstered);r.action('a','scope',8,t0+40000);assert.equal(p.scope,1);
+ r.loot=[{id:'gun',kind:'weapon',weapon:3,x:p.x,z:p.z},{id:'scope4',kind:'scope',scope:4,x:p.x,z:p.z},{id:'scope8',kind:'scope',scope:8,x:p.x,z:p.z}];for(const id of ['gun','scope4','scope8'])r.action('a','loot',id,t0+40000);
+ assert.deepEqual(p.weapons,[3]);assert.deepEqual(p.scopes,[4,8]);r.action('a','scope',4,t0+40001);assert.equal(p.scope,4);r.action('a','scope',8,t0+40002);assert.equal(p.scope,8);r.action('a','scope',1,t0+40003);assert.equal(p.scope,1);assert.deepEqual(p.scopes,[4,8]);r.action('a','scope',2,t0+40004);assert.equal(p.scope,1);
+ r.action('a','holster',null,t0+40005);const mag=p.mag[3];r.shoot(p,input(),t0+41000);assert.equal(p.mag[3],mag);r.action('a','weapon',3,t0+42000);assert.equal(p.holstered,false);r.shoot(p,input(),t0+43000);assert.equal(p.mag[3],mag-1);
+});
