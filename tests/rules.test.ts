@@ -67,3 +67,14 @@ test('multiplayer aircraft exit action works immediately and is safe to repeat',
  assert.equal(r.events.filter(e=>e.type==='drop'&&e.actor==='p0').length,1);
  r.tick(t0+1033);assert.equal(p.drop,'chute');
 });
+
+test('quick heal actions from touch controls start immediately and consume only on completion',()=>{
+ const r=room(),p=r.players.get('p0')!;p.hp=40;p.meds=1;p.kits=1;
+ r.action(p.id,'med',null,t0+4000);assert.equal(p.healKind,'med');assert.equal(p.healUntil,t0+7000);
+ r.action(p.id,'med',null,t0+4100);assert.equal(p.healUntil,t0+7000);
+ r.tick(t0+7000);assert.equal(p.hp,65);assert.equal(p.meds,0);
+ r.action(p.id,'med',null,t0+7200);assert.equal(p.healUntil,0);
+ r.action(p.id,'kit',null,t0+7300);assert.equal(p.healKind,'kit');assert.equal(p.healUntil,t0+13300);
+ r.tick(t0+13300);assert.equal(p.hp,100);assert.equal(p.kits,0);
+ r.action(p.id,'kit',null,t0+13400);assert.equal(p.healUntil,0);
+});
