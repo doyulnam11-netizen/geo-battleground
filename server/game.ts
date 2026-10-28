@@ -30,6 +30,7 @@ export class GameRoom {
  const queue=this.inputs.get(id)!;const last=queue.at(-1)?.seq??p.ack;if(v.seq<=last||v.seq>last+300||queue.length>=4)return;
  queue.push({seq:v.seq,x:Math.max(-1,Math.min(1,v.x)),z:Math.max(-1,Math.min(1,v.z)),yaw:v.yaw,pitch:Math.max(-1.48,Math.min(1.48,v.pitch)),jump:!!v.jump,sprint:!!v.sprint,stance:v.stance,aim:!!v.aim,fire:!!v.fire,lean:Number.isFinite(v.lean)?Math.max(-1,Math.min(1,v.lean!)):0,clientTime:Number.isFinite(v.clientTime)?Math.max(now-150,Math.min(now,v.clientTime!)):now});}
  action(id:string,type:string,value:unknown,now:number){const p=this.players.get(id);if(!p)return;if(type==='answer'){this.answer(id,value,now);return;}if(this.phase!=='playing'||p.status!=='alive')return;
+ if(type==='drop'&&p.drop==='plane'){p.drop='chute';this.emit('drop',now,{actor:id});return;}
  if(type==='scope'&&(value===1||(p.scopes||[]).includes(value as number))&&!p.holstered&&p.weapons.includes(p.weapon))p.scope=value as number;
  if(type==='holster'){p.holstered=true;p.scope=1;p.reloadUntil=0;}
  if(p.drop)return;
