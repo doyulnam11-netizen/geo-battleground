@@ -38,3 +38,14 @@
 .hit-notice{position:absolute;top:24%;left:50%;transform:translateX(-50%);color:#fff;background:#a92727cc;padding:9px 18px;border-radius:6px;font-weight:700}.scope-selector{display:flex;gap:5px;pointer-events:auto;margin:8px 0}.scope-selector button{padding:6px 10px;border:1px solid #aabb9988;background:#182b24;color:white}.scope-selector .selected{background:#748b42}.drop-banner{position:absolute;top:20%;left:50%;transform:translateX(-50%);background:#122824ed;padding:18px;text-align:center;color:white;z-index:20;pointer-events:auto;touch-action:manipulation;width:min(420px,calc(100vw - 32px));border:1px solid #a3c89088;border-radius:12px;box-shadow:0 12px 40px #050e08b8}.drop-banner button{padding:12px 30px;background:#c9dd9b;color:#182824}.weapon-slots{flex-wrap:wrap}
 
 .scope-mask{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at center,transparent 0 26vmin,#07110ef2 27vmin);z-index:2}.scope-mask span{position:absolute;left:50%;top:calc(50% + 20vmin);color:white;font-size:14px}.hud,.crosshair{z-index:3}
+
+/* On mobile, dedicated tap controls sit above the aiming layer. Hide the small, previously obstructed HUD heals. */
+.touch-device .hud .heal-buttons{display:none}
+.touch-med,.touch-kit{width:52px;height:52px;background:#183825e8;border:1px solid #c3e9a880;box-shadow:0 3px 16px #08180dbc}
+.touch-med{left:200px;bottom:180px}
+.touch-kit{left:258px;bottom:180px}
+.touch-count{position:absolute;top:-7px;right:-6px;min-width:19px;height:19px;padding:2px 4px;border-radius:10px;background:#d9f0ad;color:#14241a;font-size:11px;line-height:15px;font-weight:800;box-shadow:0 1px 6px #08180d99}
+.touch-button:disabled{opacity:.4!important;cursor:not-allowed;box-shadow:none}
+.touch-inventory{background:#294733e8;border:1px solid #cee8ac90}
+@media(max-height:480px) and (orientation:landscape){.touch-med{left:183px;bottom:156px}.touch-kit{left:237px;bottom:156px}}
+@media(pointer:coarse) and (min-width:901px){.touch-med{left:235px;bottom:205px}.touch-kit{left:297px;bottom:205px}}
