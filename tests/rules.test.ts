@@ -56,3 +56,14 @@ test('full map flight stays aboard past 12s and exits at opposite edge; farmed s
  assert.deepEqual(p.weapons,[3]);assert.deepEqual(p.scopes,[4,8]);r.action('a','scope',4,t0+40001);assert.equal(p.scope,4);r.action('a','scope',8,t0+40002);assert.equal(p.scope,8);r.action('a','scope',1,t0+40003);assert.equal(p.scope,1);assert.deepEqual(p.scopes,[4,8]);r.action('a','scope',2,t0+40004);assert.equal(p.scope,1);
  r.action('a','holster',null,t0+40005);const mag=p.mag[3];r.shoot(p,input(),t0+41000);assert.equal(p.mag[3],mag);r.action('a','weapon',3,t0+42000);assert.equal(p.holstered,false);r.shoot(p,input(),t0+43000);assert.equal(p.mag[3],mag-1);
 });
+
+test('multiplayer aircraft exit action works immediately and is safe to repeat',()=>{
+ const r=new GameRoom('ABC123',bank,false,1337,true);r.addPlayer('p0','A',t0);r.addPlayer('p1','B',t0);r.ready('p1');
+ r.action('p0','drop',null,t0);assert.equal(r.players.get('p0')!.drop,undefined);
+ r.start('p0',t0);const p=r.players.get('p0')!,other=r.players.get('p1')!;
+ assert.equal(p.drop,'plane');assert.equal(other.drop,'plane');
+ r.action('p0','drop',null,t0+1000);assert.equal(p.drop,'chute');assert.equal(other.drop,'plane');
+ r.action('p0','drop',null,t0+1010);assert.equal(p.drop,'chute');
+ assert.equal(r.events.filter(e=>e.type==='drop'&&e.actor==='p0').length,1);
+ r.tick(t0+1033);assert.equal(p.drop,'chute');
+});
