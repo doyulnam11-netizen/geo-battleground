@@ -1,6 +1,7 @@
 import {useEffect,useRef,useState,type CSSProperties,type PointerEvent} from 'react';
 import {Crosshair,ArrowUp,ChevronsUp,RotateCw,Hand,PersonStanding,Minus,Backpack,LocateFixed,Settings2,Activity,Check,CornerUpLeft,CornerUpRight} from 'lucide-react';
 import {controls} from './controls';
+import {connection} from './network';
 import {settings,saveSettings} from './settings';
 export default function MobileControls({edit=false,onFinish}:{edit?:boolean;onFinish?:()=>void}){
  const [stick,setStick]=useState({x:0,y:0}),[,refresh]=useState(0),[selected,setSelected]=useState('fire');
@@ -12,7 +13,7 @@ export default function MobileControls({edit=false,onFinish}:{edit?:boolean;onFi
  {id:'aim',label:'조준',icon:<Crosshair/>,down:()=>controls.aim=!controls.aim},
  {id:'leanLeft',label:'왼쪽 기울이기',icon:<CornerUpLeft/>,down:()=>{controls.leanLeft=!controls.leanLeft;controls.leanRight=false;}},
  {id:'leanRight',label:'오른쪽 기울이기',icon:<CornerUpRight/>,down:()=>{controls.leanRight=!controls.leanRight;controls.leanLeft=false;}},
- {id:'jump',label:'점프',icon:<ArrowUp/>,down:()=>controls.jump=true},
+ {id:'jump',label:'점프',icon:<ArrowUp/>,down:()=>{controls.jump=true;connection.action('drop');}},
  {id:'crouch',label:'앉기',icon:<PersonStanding/>,down:()=>controls.toggleStance('crouch')},
  {id:'prone',label:'엎드리기',icon:<Minus/>,down:()=>controls.toggleStance('prone')},
  {id:'reload',label:'재장전',icon:<RotateCw/>,down:()=>controls.onAction('reload')},
