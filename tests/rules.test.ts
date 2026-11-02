@@ -57,6 +57,7 @@ test('full map flight stays aboard past 12s and exits at opposite edge; farmed s
  r.action('a','holster',null,t0+40005);const mag=p.mag[3];r.shoot(p,input(),t0+41000);assert.equal(p.mag[3],mag);r.action('a','weapon',3,t0+42000);assert.equal(p.holstered,false);r.shoot(p,input(),t0+43000);assert.equal(p.mag[3],mag-1);
 });
 
+test('held fire before looting DMR does not swallow the first shot after equip',()=>{const r=room(),p=r.players.get('p0')!;p.weapons=[];p.holstered=true;p.weapon=2;r.input(p.id,{...input(1),fire:true},t0+4000);r.tick(t0+4000);r.loot=[{id:'dmr',kind:'weapon',weapon:2,x:p.x,z:p.z}];r.action(p.id,'loot','dmr',t0+4010);const mag=p.mag[2];r.input(p.id,{...input(2),fire:true},t0+4040);r.tick(t0+4040);assert.equal(p.mag[2],mag-1);});
 test('multiplayer aircraft exit action works immediately and is safe to repeat',()=>{
  const r=new GameRoom('ABC123',bank,false,1337,true);r.addPlayer('p0','A',t0);r.addPlayer('p1','B',t0);r.ready('p1');
  r.action('p0','drop',null,t0);assert.equal(r.players.get('p0')!.drop,undefined);

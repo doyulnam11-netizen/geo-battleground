@@ -12,7 +12,7 @@ export default function MobileControls({edit=false,onFinish,player}:{edit?:boole
  const tapActions=new Set(['inventory','med','kit']);
  const healing=!!player&&player.hp<100&&!player.drop&&player.healUntil<=connection.now();
  const buttons=[
- {id:'fire',label:'발사',icon:<LocateFixed/>,down:()=>controls.fire=true,up:()=>controls.fire=false},
+ {id:'fire',label:'발사',icon:<LocateFixed/>,down:()=>controls.fire=controls.onFireRequested(),up:()=>controls.fire=false},
  {id:'aim',label:'조준',icon:<Crosshair/>,down:()=>controls.aim=!controls.aim},
  {id:'leanLeft',label:'왼쪽 기울이기',icon:<CornerUpLeft/>,down:()=>{controls.leanLeft=!controls.leanLeft;controls.leanRight=false;}},
  {id:'leanRight',label:'오른쪽 기울이기',icon:<CornerUpRight/>,down:()=>{controls.leanRight=!controls.leanRight;controls.leanLeft=false;}},
