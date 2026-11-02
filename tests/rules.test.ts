@@ -79,3 +79,5 @@ test('quick heal actions from touch controls start immediately and consume only 
  r.tick(t0+13300);assert.equal(p.hp,100);assert.equal(p.kits,0);
  r.action(p.id,'kit',null,t0+13400);assert.equal(p.healUntil,0);
 });
+
+test('increased weapon loot includes all five types with at least sixty ground weapons',()=>{const r=room();const guns=r.loot.filter(l=>l.kind==='weapon');assert.ok(guns.length>=60);assert.deepEqual([...new Set(guns.map(l=>l.weapon))].sort(),[0,1,2,3,4]);assert.ok(r.loot.some(l=>l.kind==='scope'));});
